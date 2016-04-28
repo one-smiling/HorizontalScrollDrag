@@ -18,19 +18,26 @@ static const CGFloat DELETE_BUTTON_RADIUS = 15; //删除按钮的半径
 
 @implementation ItemView
 
-
--(BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    UIView *view = [super hitTest:point withEvent:event];
     
+    if (view == nil) {
+        if (fabs(point.y) <= DELETE_BUTTON_RADIUS &&
+            fabs(point.x - self.frame.size.width) <= DELETE_BUTTON_RADIUS  ) {
+            
+            for (UIView *touchView in self.subviews) {
+                if ([touchView isKindOfClass:[UIButton class]]) {
+                    return touchView;
+                }
+            }
+            
+        }
     
-    if (point.y < 0 && point.y >= -DELETE_BUTTON_RADIUS ) {
-        return YES;
     }
-    
-    if (point.x - self.frame.size.width <= DELETE_BUTTON_RADIUS && point.x - self.frame.size.width > 0) {
-        return YES;
-    }
-    return [super pointInside:point withEvent:event];
+    return view;
 }
+
+
 
 @end
 
